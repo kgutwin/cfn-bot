@@ -20,14 +20,14 @@ def format_tweet(header, body, link, date):
     yield f"""{header}
 
 {body}
-{link}"""
+{link} #cloudformation"""
 
     # Next, trim the body to the first sentence.
     first_sentence = body.split('. ')[0]
     yield f"""{header}
 
 {first_sentence}
-{link}"""
+{link} #cloudformation"""
 
     # Now truncate the first sentence to no more than 200 characters
     chp = 200
@@ -39,7 +39,7 @@ def format_tweet(header, body, link, date):
     yield f"""{header}
 
 {first_chunk}...
-{link}"""
+{link} #cloudformation"""
     
 
 def post_tweet(atom):
