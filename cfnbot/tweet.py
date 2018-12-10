@@ -29,8 +29,8 @@ def format_tweet(header, body, link, date):
 {first_sentence}
 {link} #cloudformation"""
 
-    # Now truncate the first sentence to no more than 200 characters
-    chp = 200
+    # Now truncate the first sentence at the most appropriate space
+    chp = 250 - len(header)
     while first_sentence[chp] != ' ':
         chp -= 1
         if chp == 0:

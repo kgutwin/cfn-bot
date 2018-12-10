@@ -41,7 +41,7 @@ def get_release_atoms(html):
                     try:
                         link = absolute_link(defterm.find('a').get('href'))
                     except AttributeError:
-                        link = None
+                        link = RELEASE_HISTORY
                     definition = defterm.find_next_sibling('dd')
 
                     if definition.find('ul') is not None:
