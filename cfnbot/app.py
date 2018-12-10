@@ -5,7 +5,7 @@ import parser, tweet, store
 
 def is_too_old(atom):
     post_date = datetime.strptime(atom[-1], '%B %d, %Y')
-    return (datetime.now() - post_date) > timedelta(days=14)
+    return (datetime.now() - post_date) > timedelta(days=15)
 
 
 def lambda_handler(event, context):
@@ -17,8 +17,11 @@ def lambda_handler(event, context):
         
         if not store.has_atom(atom):
             print("Posting:", atom)
-            tweet.post_tweet(atom)
+            result = tweet.post_tweet(atom)
             store.save_atom(atom)
-            print("SUCCESS")
+            if result:
+                print("SUCCESS")
+            else:
+                print("FAILED formatting, skipping")
             return
 
