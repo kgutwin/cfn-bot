@@ -1,0 +1,89 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: cfn-bot - Cloudformation update tweet bot
+
+Globals:
+  Function:
+    Timeout: 30
+
+Parameters:
+  TwitterAccessTokenKey:
+    Type: String
+
+  TwitterAccessTokenSecret:
+    Type: String
+
+  NotificationEmail:
+    Type: String
+    Default: karl@gutwin.org
+    
+
+Resources:
+  DynamoTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: hash
+          AttributeType: 'S'
+      KeySchema:
+        - AttributeName: hash
+          KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+  
+  BotFunction:
+    Type: AWS::Serverless::Function 
+    Properties:
+      CodeUri: cfnbot/build/
+      Handler: app.lambda_handler
+      Runtime: python3.6 
+      Policies:
+        - Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Action:
+                - "dynamodb:GetItem"
+                - "dynamodb:PutItem"
+              Resource: !GetAtt DynamoTable.Arn
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref DynamoTable
+          TWITTER_ACCESS_TOKEN_KEY: !Ref TwitterAccessTokenKey
+          TWITTER_ACCESS_TOKEN_SECRET: !Ref TwitterAccessTokenSecret
+      Events:
+        RunBotPeriodically:
+          Type: Schedule
+          Properties:
+            Schedule: rate(2 minutes)
+
+  AlarmTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      Subscription:
+        - Protocol: email
+          Endpoint: !Ref NotificationEmail
+
+  ErrorAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmActions:
+        - !Ref AlarmTopic
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      Dimensions:
+        - Name: FunctionName
+          Value: !Ref BotFunction
+      MetricName: Errors
+      Namespace: AWS/Lambda
+      EvaluationPeriods: 60
+      Period: 60
+      Statistic: Sum
+      Threshold: '5'
+
+Outputs:
+  TableName:
+    Description: Dynamo table name
+    Value: !Ref DynamoTable
+    
+  BotFunctionArn:
+    Description: "First Lambda Function ARN"
+    Value: !GetAtt BotFunction.Arn
+
