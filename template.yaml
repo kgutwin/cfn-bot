@@ -34,7 +34,7 @@ Resources:
     Type: AWS::Serverless::Function 
     Properties:
       CodeUri: cfnbot/build/
-      Handler: app.lambda_handler
+      Handler: cfnbot.app.lambda_handler
       Runtime: python3.6 
       Policies:
         - Version: "2012-10-17"

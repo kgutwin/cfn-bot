@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 
-import parser, tweet, store
+from cfnbot import parser, tweet, store
 
 
 def is_too_old(atom):

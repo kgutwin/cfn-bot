@@ -14,7 +14,7 @@ PIPENV ?= pipenv
 #  Python vars	#
 ################# 
 
-SERVICE ?= service_not_defined
+SERVICE ?= cfnbot
 
 ############# 
 #  SAM vars	#
@@ -51,8 +51,7 @@ else
 	@$(MAKE) _package SERVICE="${SERVICE}"
 endif
 
-build: _check_service_definition _clone_service_to_build ##=> Same as package except that we don't create a ZIP
-	@$(MAKE) _install_deps SERVICE="${SERVICE}"
+build: _check_service_definition _clone_service_to_build _install_deps
 
 run: ##=> Run SAM Local API GW and can optionally run new containers connected to a defined network
 	@test -z ${NETWORK} \
@@ -91,27 +90,12 @@ ifeq ($(wildcard Pipfile),)
 endif
 
 _clone_service_to_build:
-ifeq ($(wildcard $(SERVICE)/build/.),)
 	$(info [+] Setting permissions for files under ${SERVICE}/)
-	find ${SERVICE}/ -type f -exec chmod go+r {} \;
+	find ${SERVICE}/ -name build -prune -o -type f -exec chmod go+r {} \;
 	$(info [+] Setting permissions for directories under ${SERVICE}/)
-	find ${SERVICE}/ -type d -exec chmod go+rx {} \;
+	find ${SERVICE}/ -name build -prune -o -type d -exec chmod go+rx {} \;
 	$(info [+] Cloning ${SERVICE} directory structure to ${SERVICE}/build)
-	rsync -a -f "+ */" -f "- *" ${SERVICE}/ ${SERVICE}/build/
-	$(info [+] Cloning source files from ${SERVICE} to ${SERVICE}/build)
-	@find ${SERVICE} -type f \
-			-not -name "*.pyc" \
-			-not -name "*__pycache__" \
-			-not -name "requirements.txt" \
-			-not -name "event.json" \
-			-not -name "build" | cut -d '/' -f2- > .results.txt
-	@while read line; do \
-		ln -f ${SERVICE}/$$line ${SERVICE}/build/$$line; \
-	done < .results.txt
-	rm -f .results.txt
-else
-	$(info [-] '$(SERVICE)' already has a development build - Ignoring cloning task...)
-endif
+	rsync -a --filter=".- .gitignore" ${SERVICE} ${SERVICE}/build/
 
 _check_dev_definition: _check_service_definition
 	$(info [*] Checking whether service $(SERVICE) development build exists...)
@@ -121,15 +105,19 @@ ifeq ($(wildcard $(SERVICE)/build/.),)
 	$(error [!] '$(SERVICE)' doesn't have development build)
 endif
 
-_install_deps:
-	$(info [+] Installing '$(SERVICE)' dependencies...")	
-	@pip install pipenv
+_install_deps: $(SERVICE)/build/requirements.txt
+
+requirements.txt: Pipfile
+	$(info [+] Generating '$(SERVICE)' requirements...")	
 	@$(PIPENV) lock -r > requirements.txt
+
+$(SERVICE)/build/requirements.txt: requirements.txt
+	$(info [+] Installing '$(SERVICE)' dependencies...")	
 	@$(PIPENV) run pip install \
 		--isolated \
 		--disable-pip-version-check \
 		-Ur requirements.txt -t ${SERVICE}/build/
-	@rm -f requirements.txt
+	@cp requirements.txt ${SERVICE}/build/
 
 # Package application and devs together in expected zip from build
 _package: _clone_service_to_build _check_service_definition _install_deps

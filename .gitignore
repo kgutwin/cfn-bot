@@ -247,3 +247,4 @@ $RECYCLE.BIN/
 .twitter_keys
 serverless-output.yaml
 Pipfile.lock
+requirements.txt

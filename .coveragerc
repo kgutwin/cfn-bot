@@ -1,6 +1,7 @@
 [run]
 branch = True
-omit = */build/*,tests/*
+omit = */build/*,tests/*,get_access_token.py
+
 [report]
 exclude_lines =
     pragma: no cover
