@@ -78,7 +78,7 @@ def get_release_atoms(html):
         for defterm, definition in get_deflist_pairs(description):
             first_word = change.text.strip().split()[0]
             resource = defterm.text.strip()
-            header = f"{first_word} {resource}"
+            header = strip_internal(f"{first_word} {resource}")
             link = get_link(defterm)
 
             children_iterator = iter(
@@ -100,6 +100,7 @@ def get_release_atoms(html):
                     yield header, def_text, link, date.text.strip()
         
         if not has_deflist:
+            header = strip_internal(change.text.strip())
             desc_p = strip_internal(description.find('p').text).strip()
             link = get_link(description)
-            yield change.text.strip(), desc_p, link, date.text.strip()
+            yield header, desc_p, link, date.text.strip()
