@@ -8,7 +8,7 @@ TABLE_NAME = os.environ.get('TABLE_NAME')
 
 def hash_atom(atom):
     m = hashlib.sha256()
-    for k in atom:
+    for k in (atom[0], atom[1], atom[2] or ''):
         m.update(k.encode('utf-8'))
     return m.hexdigest()
 
@@ -29,7 +29,20 @@ def save_atom(atom):
             'hash': {'S': key},
             'subject': {'S': atom[0]},
             'description': {'S': atom[1]},
-            'link': {'S': repr(atom[2])},
+            'link': {'S': atom[2] or ''},
             'date': {'S': atom[3]}
         }
     )
+
+
+def rehash_all_atoms():
+    paginator = dynamo.get_paginator('scan')
+    for response in paginator.paginate(TableName=TABLE_NAME):
+        for item in response['Items']:
+            atom = (
+                item['subject']['S'],
+                item['description']['S'],
+                item['link']['S'].strip("'"),
+                item['date']['S']
+            )
+            save_atom(atom)
