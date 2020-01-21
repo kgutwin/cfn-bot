@@ -3,7 +3,7 @@ from os.path import dirname
 from bs4 import BeautifulSoup
 from urllib.request import urlopen
 
-RELEASE_HISTORY = "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/ReleaseHistory.html"
+RELEASE_HISTORY = "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/ReleaseHistory.partial.html"
 
 
 TRIM_WHITESPACE = re.compile(r'\s+')
@@ -23,7 +23,7 @@ def absolute_link(href, base=None):
 
 def get_table_rows(soup):
     table_rows = soup.find('div', id='main-col-body').find(
-        'div', class_='table').find_all('tr')
+        'div', class_='table-contents').find_all('tr')
     for row in table_rows:
         if not row.find('th'):
             yield row.find_all('td')
