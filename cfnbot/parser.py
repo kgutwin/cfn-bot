@@ -3,7 +3,7 @@ from os.path import dirname
 from bs4 import BeautifulSoup
 from urllib.request import urlopen
 
-RELEASE_HISTORY = "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/ReleaseHistory.partial.html"
+RELEASE_HISTORY = "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/ReleaseHistory.html"
 
 
 TRIM_WHITESPACE = re.compile(r'\s+')

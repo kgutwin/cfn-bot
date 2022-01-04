@@ -5,7 +5,7 @@ from cfnbot import parser, tweet, store
 
 def is_too_old(atom):
     post_date = datetime.strptime(atom[-1], '%B %d, %Y')
-    return (datetime.now() - post_date) > timedelta(days=15)
+    return (datetime.now() - post_date) > timedelta(days=30)
 
 
 def lambda_handler(event, context):
