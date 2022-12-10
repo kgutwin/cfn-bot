@@ -1,4 +1,4 @@
-from moto import mock_dynamodb2
+from moto import mock_dynamodb
 import boto3
 import pytest
 
@@ -7,7 +7,7 @@ from cfnbot import store
 
 @pytest.fixture
 def mock_dynamo_table(mocker):
-    mock_dynamodb_instance = mock_dynamodb2()
+    mock_dynamodb_instance = mock_dynamodb()
     mock_dynamodb_instance.start()
     boto3.setup_default_session()
     mocker.patch.object(store, 'dynamo', boto3.client('dynamodb'))

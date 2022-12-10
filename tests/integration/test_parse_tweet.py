@@ -1,7 +1,7 @@
 import re
 import pytest
 
-from cfnbot import parser, tweet
+from cfnbot import parser, formatter
 
 
 
@@ -15,7 +15,7 @@ def test_format_all():
     html = parser.get_release_history()
     for atom in parser.get_release_atoms(html):
         attempts = []
-        for msg in tweet.format_tweet(*atom):
+        for msg in formatter.format_post(*atom):
             msg = _sub_link(msg)
             attempts.append(msg)
             if len(msg) < 280:

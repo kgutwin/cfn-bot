@@ -1,23 +1,20 @@
 [[source]]
-
 url = "https://pypi.python.org/simple"
 verify_ssl = true
 name = "pypi"
 
-
 [packages]
-
 boto3 = "*"
 beautifulsoup4 = "*"
 python-twitter = "*"
 requests_oauthlib = "*"
+"mastodon.py" = "==1.8.0"
 
 [dev-packages]
-
 pytest = "*"
 pytest-cov = "*"
 pytest-mock = "*"
 moto = "*"
 
 [requires]
-python_version = "3.6"
+python_version = "3.7"

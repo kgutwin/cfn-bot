@@ -109,7 +109,7 @@ _install_deps: $(SERVICE)/build/requirements.txt
 
 requirements.txt: Pipfile
 	$(info [+] Generating '$(SERVICE)' requirements...")	
-	@$(PIPENV) lock -r > requirements.txt
+	@$(PIPENV) requirements > requirements.txt
 
 $(SERVICE)/build/requirements.txt: requirements.txt
 	$(info [+] Installing '$(SERVICE)' dependencies...")	

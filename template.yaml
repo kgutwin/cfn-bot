@@ -16,7 +16,12 @@ Parameters:
   NotificationEmail:
     Type: String
     Default: karl@gutwin.org
-    
+
+  MastodonAccessToken:
+    Type: String
+
+  MastodonApiBaseUrl:
+    Type: String
 
 Resources:
   DynamoTable:
@@ -35,7 +40,7 @@ Resources:
     Properties:
       CodeUri: cfnbot/build/
       Handler: cfnbot.app.lambda_handler
-      Runtime: python3.6 
+      Runtime: python3.7
       Policies:
         - Version: "2012-10-17"
           Statement:
@@ -49,6 +54,8 @@ Resources:
           TABLE_NAME: !Ref DynamoTable
           TWITTER_ACCESS_TOKEN_KEY: !Ref TwitterAccessTokenKey
           TWITTER_ACCESS_TOKEN_SECRET: !Ref TwitterAccessTokenSecret
+          MASTODON_ACCESS_TOKEN: !Ref MastodonAccessToken
+          MASTODON_API_BASE_URL: !Ref MastodonApiBaseUrl
       Events:
         RunBotPeriodically:
           Type: Schedule

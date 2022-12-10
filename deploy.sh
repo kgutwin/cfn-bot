@@ -12,6 +12,9 @@ fi
 # load twitter keys
 . ./.twitter_keys
 
+# load mastodon keys
+. ./.mastodon_keys
+
 make build SERVICE=cfnbot
 
 sam package --template-file template.yaml \
@@ -23,5 +26,7 @@ sam deploy --region us-east-1 \
     --stack-name $STACK_NAME \
     --capabilities CAPABILITY_IAM \
     --parameter-overrides "TwitterAccessTokenKey=$TWITTER_ACCESS_TOKEN_KEY" \
-    "TwitterAccessTokenSecret=$TWITTER_ACCESS_TOKEN_SECRET"
+    "TwitterAccessTokenSecret=$TWITTER_ACCESS_TOKEN_SECRET" \
+    "MastodonAccessToken=$MASTODON_ACCESS_TOKEN" \
+    "MastodonApiBaseUrl=$MASTODON_API_BASE_URL"
 
