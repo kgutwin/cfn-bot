@@ -61,7 +61,7 @@ Resources:
           Type: Schedule
           Properties:
             #Schedule: rate(2 minutes)
-            Schedule: rate(1 hour)
+            Schedule: rate(2 hours)
 
   AlarmTopic:
     Type: AWS::SNS::Topic
