@@ -18,7 +18,7 @@ def lambda_handler(event, context):
         if not store.has_atom(atom):
             print("Posting:", atom)
             #result = tweet.post_tweet(atom)
-            result = toot.post_toot(atom) and result
+            result = toot.post_toot(atom)
             store.save_atom(atom)
             if result:
                 print("SUCCESS")
