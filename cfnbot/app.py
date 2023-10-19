@@ -11,9 +11,11 @@ def is_too_old(atom):
 def lambda_handler(event, context):
     rh = parser.get_release_history()
     atoms = parser.get_release_atoms(rh)
+    print('Release history loaded')
     for atom in atoms:
         if is_too_old(atom):
-            continue
+            print('too old:', atom)
+            return
         
         if not store.has_atom(atom):
             print("Posting:", atom)
@@ -26,3 +28,7 @@ def lambda_handler(event, context):
                 print("FAILED formatting, skipping")
             return
 
+        if context.get_remaining_time_in_millis() < 1000:
+            print('leaving early... at:', atom)
+            return
+            

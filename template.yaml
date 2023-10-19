@@ -61,7 +61,7 @@ Resources:
           Type: Schedule
           Properties:
             #Schedule: rate(2 minutes)
-            Schedule: rate(2 hours)
+            Schedule: rate(1 hour)
 
   AlarmTopic:
     Type: AWS::SNS::Topic
@@ -84,7 +84,7 @@ Resources:
       EvaluationPeriods: 1
       Period: 3600
       Statistic: Sum
-      Threshold: '5'
+      Threshold: '3'
 
 Outputs:
   TableName:
